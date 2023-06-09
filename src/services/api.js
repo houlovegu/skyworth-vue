@@ -1,9 +1,17 @@
-const baseURL = "http://localhost:8002";
+const baseURL = "http://localhost:8080";
 
 export default {
   login: {
-    url: baseURL + "/user/login", // 登录接口
+    url: baseURL + "/auth/login", // 登录接口
     method: "post"
+  },
+  userInfo: {
+    url: baseURL + "/user/info", // 登录接口
+    method: "get"
+  },
+  getRouter: {
+    url: baseURL + "/menu/getRouter", // 登录接口
+    method: "get"
   },
   signOut: {
     url: baseURL + "/user/logout", // 登出接口
@@ -45,8 +53,8 @@ export default {
     url: baseURL + "/minio/getFileUrl", //文件路径接口
     method: "post"
   },
-  getAwsLoginUrl:{
-    url: baseURL + "/amazon/login", //awslogin
+  getAuthLoginUrl:{
+    url: baseURL + "/oauth/login/", //awslogin
     method: "get"
   },
   getUnifyLoginUrl:{
@@ -55,6 +63,30 @@ export default {
   },
   getLoginByCode:{
     url: baseURL + "/v1/oa", //awslogin
+    method: "get"
+  },
+  getAddThirdClientUrl:{
+    url: baseURL + "/third/oauth/add", //awslogin
+    method: "post"
+  },
+  getThirdClientListUrl:{
+    url: baseURL + "/third/oauth/list", //awslogin
+    method: "post"
+  },
+  getLoginByTokenUrl:{
+    url: baseURL + "/user/loginByToken", //awslogin
+    method: "post"
+  },
+  getLoginUserUrl:{
+    url: baseURL + "/user/info", //awslogin
+    method: "get"
+  },
+  getOauthLoginUserUrl:{
+    url: baseURL + "/oauth/login", //awslogin
+    method: "get"
+  },
+  getOauthCallbackUrl:{
+    url: baseURL + "/oauth/callback", //awslogin
     method: "get"
   }
 };

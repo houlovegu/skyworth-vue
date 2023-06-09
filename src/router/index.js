@@ -33,12 +33,52 @@ const device = resolve => {
   });
 };
 
+// thirdClient
+const thirdClient = resolve => {
+  require.ensure(["../views/thirdClient/list.vue"], () => {
+    resolve(require("../views/thirdClient/list.vue"));
+  });
+};
+
 // message
 const message = resolve => {
   require.ensure(["../views/message/message.vue"], () => {
     resolve(require("../views/message/message.vue"));
   });
 };
+
+// oauth
+const oauth = resolve => {
+  require.ensure(["../views/oauth/oauth.vue"], () => {
+    resolve(require("../views/oauth/oauth.vue"));
+  });
+};
+
+// auth-confirm
+const confirm = resolve => {
+  require.ensure(["../views/oauth/confirm.vue"], () => {
+    resolve(require("../views/oauth/confirm.vue"));
+  });
+};
+
+// 公共路由
+const constantRoutes = [
+  {
+      path: '/login',
+      name: 'login',
+      component: () => import('@/views/login/login'),
+      meta: {
+          title: '登录',
+      },
+      hidden: true
+  },
+];
+
+// 清空路由表
+export const asyncRouterMap = [];
+
+
+
 
 export const routes = [
   {
@@ -81,7 +121,19 @@ export const routes = [
           auth: true,
           keepAlive: false
         }
-      }
+      },
+      {
+        path: "/thirdClient",
+        name: "ThirdClient",
+        component: thirdClient,
+        meta: {
+          title: "ThirdClient",
+          content: "一些页面描述---有助于google搜索",
+          path: "thirdClient",
+          auth: true,
+          keepAlive: false
+        }
+      },
     ]
   },
   {
@@ -140,6 +192,42 @@ export const routes = [
       title: "Message",
       content: "一些页面描述---有助于google搜索",
       path: "message",
+      auth: true,
+      keepAlive: false
+    }
+  },
+  {
+    path: "/thirdClient",
+    name: "ThirdClient",
+    component: thirdClient,
+    meta: {
+      title: "ThirdClient",
+      content: "一些页面描述---有助于google搜索",
+      path: "thirdClient",
+      auth: true,
+      keepAlive: false
+    }
+  },
+  {
+    path: "/oauth",
+    name: "Oauth",
+    component: oauth,
+    meta: {
+      title: "Sign In",
+      content: "一些页面描述---有助于google搜索",
+      path: "oauth",
+      auth: true,
+      keepAlive: false
+    }
+  },
+  {
+    path: "/confirm",
+    name: "Confirm",
+    component: confirm,
+    meta: {
+      title: "Sign In",
+      content: "一些页面描述---有助于google搜索",
+      path: "confirm",
       auth: true,
       keepAlive: false
     }

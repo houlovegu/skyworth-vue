@@ -1,42 +1,80 @@
 <template>
-  <div class="content">
-    <!-- 顶部导航栏 -->
-    <div class="nav-top">
-      <div>
-        <router-link class="page-title" to="/index">{{
-          $config.pageTitle
-        }}</router-link>
-      </div>
-      <div>
-        <span class="btn" @click="signoutFn()">
-          Sign Out
-        </span>
-      </div>
-    </div>
-    <!-- 左侧导航栏 -->
-    <div class="left-nav">
-      <div class="nav-per" :class="{ active: $route.name === 'Device' }">
-        <router-link to="/device"
-          ><i class="el-icon-menu"></i>Device List</router-link
-        >
-      </div>
-      <div class="nav-per" :class="{ active: $route.name === 'Message' }">
-        <router-link to="/message"
-          ><i class="el-icon-message"></i>Send Message</router-link
-        >
-      </div>
-    </div>
-    <keep-alive>
-      <router-view
-        class="page-content"
-        v-if="!$route.meta.keepAlive"
-      ></router-view>
-    </keep-alive>
-  </div>
+    <el-container v-loading="isLoading" style="height: 500px; border: 1px solid #eee">
+        <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+            <!-- 默认要展开的菜单列表 -->
+            <el-menu :default-openeds="[]">
+                <el-submenu index="1">
+                    <template slot="title"><i class="el-icon-message"></i>导航一</template>
+                    <el-menu-item-group>
+                        <el-menu-item index="1-1">选项1</el-menu-item>
+                        <el-menu-item index="1-2">选项2</el-menu-item>
+                    </el-menu-item-group>
+                </el-submenu>
+            </el-menu>
+        </el-aside>
+
+        <el-container>
+            <el-header style="text-align: right; font-size: 12px">
+                <el-dropdown>
+                    <i class="el-icon-setting" style="margin-right: 15px"></i>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item>查看</el-dropdown-item>
+                        <el-dropdown-item>新增</el-dropdown-item>
+                        <el-dropdown-item>删除</el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <span>王小虎</span>
+            </el-header>
+            <el-main>
+                <el-table :data="tableData">
+                    <el-table-column prop="date" label="日期" width="140">
+                    </el-table-column>
+                    <el-table-column prop="name" label="姓名" width="120">
+                    </el-table-column>
+                    <el-table-column prop="address" label="地址">
+                    </el-table-column>
+                </el-table>
+            </el-main>
+        </el-container>
+    </el-container>
 </template>
 <script>
+import {getAsyncRoutes} from "@/permission"
 export default {
   name: "index",
+  data() {
+    const item = {
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      };
+      return {
+        tableData: Array(20).fill(item),
+        menuList: [],
+        isLoading: false
+      }
+  },
+  created() {
+    if (this.$common.getOtherInfo("asyncRouter") == null) {
+        const menus = this.getRouter();
+        this.menuList = menus;
+        const router = getAsyncRoutes(menus);
+        this.$router.addRoutes(router);
+        router.forEach(val => { 
+            // 将菜单提取出来的路由加到路由表
+            this.$router.options.routes.push(val)
+        })
+        console.log(this.$router);
+        this.$common.setOtherInfo("menu", JSON.stringify(res.data));
+    } else {
+        this.menuList = JSON.parse(this.$common.getOtherInfo("menu"));
+        const router = getAsyncRoutes(this.menuList)
+        this.$router.addRoutes(router)
+        router.forEach(val => { // 将菜单提取出来的路由加到路由表
+            this.$router.options.routes.push(val)
+        })
+    }
+  },
   methods: {
     signoutFn() {
       // 如果调接口 请将下面的代码写在接口相应结果成功后
@@ -50,53 +88,30 @@ export default {
           }
         })
         .catch(err => {});
+    },
+    getRouter() {
+        var router = null;
+        this.$ajax.getData(this.$api.getRouter.url).then(res=>{
+            if (res.code == 200) {
+                console.log(res.data);
+                router = res.data; 
+            }     
+        }).catch(err => {
+            this.isLoading = false;
+        }) 
+        return router;
     }
   }
 };
 </script>
 <style lang="css" scoped>
-.page-content {
-  padding-top: 50px;
-  padding-left: 200px;
-}
-
-.left-nav {
-  position: fixed;
-  top: 80px;
-  left: 0;
-  width: 200px;
-  bottom: 0;
-  background: #0c2439;
-}
-
-.nav-per {
-  line-height: 50px;
-  text-align: left;
-  font-size: 18px;
-  font-weight: bold;
-  padding: 0 20px;
-}
-
-.nav-per.active,
-.nav-per:hover {
-  background: #05ffff;
-}
-
-.nav-per.active a,
-.nav-per:hover a {
-  color: #000;
-}
-
-.nav-per a {
-  text-decoration: none;
-  color: #fff;
-  display: block;
-  line-height: 50px;
-}
-
-.nav-per a i {
-  font-size: 18px;
-  vertical-align: text-bottom;
-  margin-right: 5px;
-}
+  .el-header {
+    background-color: #B3C0D1;
+    color: #333;
+    line-height: 60px;
+  }
+  
+  .el-aside {
+    color: #333;
+  }
 </style>

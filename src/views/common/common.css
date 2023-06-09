@@ -113,7 +113,7 @@ div.input-box .el-form-item__error {
 img.code-img {
   position: absolute;
   right: 0;
-  top: 20px;
+  top: 0px;
   height: 40px;
   width: auto;
   z-index: 22;

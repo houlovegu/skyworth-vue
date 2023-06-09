@@ -1,5 +1,5 @@
 <template
-  ><div v-loading="isLoading" class="container" >
+  ><div v-loading="isLoading" class="container">
     <div class="container-bg"></div>
     <div class="nav-top">
       <div>{{ $config.pageTitle }}</div>
@@ -10,7 +10,7 @@
       </div> -->
     </div>
     <div class="sign-box">
-      <h1 class="title">Sign In</h1>
+      <h1 class="title">OAuth Sign In</h1>
       <div class="input-box">
         <el-form
           ref="form"
@@ -46,21 +46,18 @@
       <div class="input-box">
         <span class="btn" @click="signFn()">Sign In</span>
       </div>
-      <!-- <div class="input-box"> -->
-        <!-- <span id="LoginWithAmazon" class="btn-th" @click="lwaFn('amazon')">Amazon</span> -->
-        <!-- <span id="LoginWithGoogle" class="btn-th" @click="lwaFn('google')">Google</span>
-        <span id="LoginWithAmazon" class="btn-th" @click="lwaFn('skyworth')">Skyworth</span> -->
-      <!-- </div> -->
+      <div class="input-box">
+        <span id="LoginWithAmazon" class="btn-th" @click="lwaFn('amazon')">Amazon</span>
+        <span id="LoginWithGoogle" class="btn-th" @click="lwaFn('google')">Google</span>
+      </div>
     </div>
   </div>
 </template>
 <script>
 import { isMiddlePassword, isEmail } from "@/config/validate";
-import JsEncrypt from "jsencrypt"
-import { _publickey } from '@/utils/rsaPublicKey'
 const Qs = require("qs");
 export default {
-  name: "Login",
+  name: "Oauth",
   data() {
     const validateEmail = (rule, value, callback) => {
       if (!value && !isEmail(value))
@@ -68,20 +65,25 @@ export default {
       else callback();
     };
     const validatePassword = (rule, value, callback) => {
-      if (!isMiddlePassword(value))
-        callback(
-          new Error(
-            "The password contains 8~32 digits (two of numbers, letters, symbols)"
-          )
-        );
-      else callback();
+      // if (!isMiddlePassword(value))
+      //   callback(
+      //     new Error(
+      //       "The password contains 8~32 digits (two of numbers, letters, symbols)"
+      //     )
+      //   );
+      // else callback();
+      callback();
     };
     return {
-      webSocket: "",
-      form: {
-        email: "",
-        password: ""
-      },
+        state: "",
+        client_id: "",
+        client_secret: "",
+        redirect_uri: "",
+        scope: "",
+        form: {
+            email: "",
+            password: "",
+        },
       rules: {
         email: [
           {
@@ -103,17 +105,18 @@ export default {
   },
   created() {
     // 授权成功则调用后端接口
-    // let code = this.getUrlQuery('token')
-    // let state = this.getUrlQuery('state')    
-    // if (code && state) this.loginByCode(code,state)
-    let token = this.getUrlQuery('token')
-    // let expire_in = this.getUrlQuery('expire_in')
-    // let refresh_token = this.getUrlQuery('refresh_token')
-    // let refresh_token_expire_in = this.getUrlQuery('refresh_token_expire_in')
-    if (token) {
-      this.$common.setOtherInfo("token", token);
-      this.loginByToken(token)
-    }
+    this.state = this.getUrlQuery('state')
+    // this.client_id = this.getUrlQuery('client_id')
+    this.client_id = this.$route.query.client_id
+    // this.client_secret = this.getUrlQuery('client_secret')
+    this.client_secret = this.$route.query.client_secret
+    // this.redirect_uri = this.getUrlQuery('redirect_uri')
+    this.redirect_uri = this.$route.query.redirect_uri
+    this.scope = this.$route.query.scope
+    // if (token) {
+    //   this.$common.setOtherInfo("token", token);
+    //   this.loginByToken(token)
+    // }
   },
   mounted() {
   },
@@ -134,44 +137,43 @@ export default {
           // 如果方法是query，则直接 const data = {email: '', password:''}
           // ajax方法在src/services/ajax文件中
           // 请求地址配置在src/services/api文件中
-          let en = new JsEncrypt()
-          en.setPublicKey(_publickey)
           const data = {
-            username: this.form.email,
-            password: en.encrypt(this.form.password)
+            email: this.form.email,
+            password: this.$md5(this.form.password),
+            state: this.state,
+            clientId: this.client_id,
+            clientSecret: this.client_secret,
+            redirectUri: this.redirect_uri,
+            scope: this.scope,
           };
           this.$ajax
-            .postData(this.$api.login.url, data)
+            .postData(this.$api.getOauthLoginUserUrl.url, data)
             .then(res => {
               if (res.code == 200) {
-                if (res.data) this.$common.setOtherInfo("token", res.data); // 将token存到缓存中
-                // 登录成功
-                // 获取用户信息
-                this.userInfo();
+                // this.$router.push({ path: "/index" });
+                // window.location.href = res.data.url+"?state="+this.state;
+                this.$router.push({
+                  name: 'Confirm',
+                  query: {
+                    state: this.state,
+                    code: res.data.code,
+                    client_id: res.data.client_id,
+                    scope: res.data.scope
+                  }
+                });
+              } else {
+                this.$store.dispatch("showMessageTip", {
+                  type: "error",
+                  text: res.msg
+                });
               }
               this.isLoading = false;
             })
             .catch(err => {
               this.isLoading = false;
-            })
+            });
         }
       });
-      //
-    },
-    userInfo() {
-      this.$ajax.getData(this.$api.userInfo.url).then(res=>{
-                  if (res.code == 200) {
-                    if (res.data) {
-                      this.$common.setOtherInfo("user", res.data.user);
-                      this.$common.setOtherInfo("roles", res.data.roles);
-                      this.$common.setOtherInfo("permissions", res.data.permissions);
-                    }
-                    this.$router.push({ path: "/index" });
-                  }
-            })
-            .catch(err => {
-              this.isLoading = false;
-            });
     },
     lwaFn(loginType) {
       // 调用amazon api接口
@@ -229,7 +231,6 @@ export default {
       this.$ajax
             .getData(this.$api.getLoginUserUrl.url)
             .then(res => {
-              console.log(res);
               if (res.code == 200) {
                 if (res.data) this.$common.setOtherInfo("user", res.data); // 
                 // 登录成功
@@ -249,25 +250,6 @@ export default {
         }
 
     },
-    loginByCode(code,state) {
-      let data = {
-        params: {
-          code: code,
-          state: state
-        }
-      }
-      var loginType = this.$common.getLocal("loginType")
-      this.$ajax.getData(this.$api.getLoginByCode.url+"/"+loginType+"/logincallback", data)
-      .then(res => {
-        if (res.code == 200) {
-            console.log(res)
-        }
-        this.isLoading = false;
-      })
-      .catch(err => {
-          this.isLoading = false;
-        });
-    }
 };
 </script>
 <style lang="css" scoped>

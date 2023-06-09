@@ -56,7 +56,7 @@
               tabindex="4"
               @keyup.enter.native="resetFn"
             />
-            <img v-if="captchaImg" :src="captchaImg" alt="" class="code-img" />
+            <img v-if="captchaImg" :src="captchaImg" @click="getCaptchaUrl" alt="" class="code-img" />
           </el-form-item>
         </el-form>
       </div>
@@ -68,7 +68,6 @@
 </template>
 <script>
 import { isEmail, isMiddlePassword } from "@/config/validate.js";
-import { getCaptcha } from "@/services/request";
 export default {
   name: "Reset",
   data() {
@@ -102,6 +101,7 @@ export default {
       }
     };
     return {
+      uuid: "",
       form: {
         email: "",
         captcha: "",
@@ -148,35 +148,26 @@ export default {
   methods: {
     getCaptchaUrl() {
       this.captchaImg = "";
-      // 这里可以调get方法获取图片url
-      getCaptcha().then(res => {
-        if (res.status == 200) {
-          // let url = window.URL.createObjectURL(new Blob([res.data],{type: "image/png"}))
-          this.captchaImg = window.URL.createObjectURL(res.data);
-        }
-      });
-      // this.$ajax
-      //   .getData(
-      //     this.$api.getCaptchaUrl.url,
-      //     {
-      //       params: {},
-      //       headers: {}
-      //     },
-      //     {
-      //       responseType: true
-      //     }
-      //   )
-      //   .then(res => {
-      //     console.log(res)
-      //     // if (res.status == 200) {
-      //     //   console.log(res)
-      //     this.captchaImg = window.URL.createObjectURL(new Blob([res],{type: "image/png"}))
-      //     // this.captchaImg = window.URL.createObjectURL(res);
-      //     console.log(this.captchaImg)
-      //     // this.captchaImg = res.data.url || "";
-      //     // }
-      //   })
-      //   .catch(err => {});
+      this.$ajax
+        .getData(
+          this.$api.getCaptchaUrl.url,
+          {
+            params: {},
+            headers: {}
+          },
+          {
+            responseType: true
+          }
+        )
+        .then(res => {
+          console.log(res)
+          if (res.code == 200) {
+            this.uuid = res.data.uuid
+            this.captchaImg = "data:image/gif;base64," + res.data.img;
+            // this.captchaImg = window.URL.createObjectURL(new Blob([res.data.img],{type: "image/jpng"}))
+          }
+        })
+        .catch(err => {});
     },
     resetFn() {
       this.$refs.form.validate(async valid => {

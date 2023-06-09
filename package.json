@@ -16,6 +16,7 @@
     "element-ui": "^2.15.13",
     "jquery": "^3.6.4",
     "js-md5": "^0.7.3",
+    "jsencrypt": "^3.3.2",
     "qs": "^6.11.1",
     "vue": "^2.5.2",
     "vue-hot-reload-api": "^2.3.4",

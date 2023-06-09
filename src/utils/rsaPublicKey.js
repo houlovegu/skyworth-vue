@@ -1,0 +1,9 @@
+export const _publickey =`-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAy9hQ8jOjt4/uRfZ5Z3qk
+DV8gGcRo77K0ziaNRJajyP4T3svLjyz4AUK7IPqzelTOsFYdO0VdmWzdkqTSOS/v
+MgP83qahDL0gtRVHqoiPDEJprzEm+awKg9eNibsMSmGCyDLkpwlLtRxmIDPb0cG5
+0E4W0estS5hPQlUQ8KVBShgTdcv9knukPrYAQco/M/vOXE0VRsnLcycmS9uTVvvz
++YpxNYkJuBKi2u/wBExS13AKjFT82Bv/H2wBKn9irI6z66ujL1K6I4zuX9c/Tuud
+JLr9bcrKJkVl+xV45UU+6iddGCHei3ntlkZFzZlbVBual02An51rOdwn5aChcY3k
+lwIDAQAB
+-----END PUBLIC KEY-----`

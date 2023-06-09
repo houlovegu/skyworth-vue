@@ -4,3 +4,4 @@ export default {
   pageLengthArr: [50, 100, 500], // 列表可以选择的每页数量
   pageSize: 50, // 列表每页数量 默认100
 };
+
