@@ -1,3 +1,6 @@
+
+
+
 <template
   ><div v-loading="isLoading" class="container">
     <div class="container-bg"></div>
@@ -188,7 +191,7 @@ export default {
       //   },
       //   window.location.href
       // );
-      
+
       this.$common.setLocal("loginType", loginType)
       this.$ajax
         .getData(this.$api.getAuthLoginUrl.url+loginType)
@@ -201,7 +204,7 @@ export default {
           //   // 可以在此写跳转到首页
           //   // this.$router.push({ path: "/index" });
             window.location.href = res.data
-          }  
+          }
           this.isLoading = false;
         })
         .catch(err => {
@@ -232,7 +235,7 @@ export default {
             .getData(this.$api.getLoginUserUrl.url)
             .then(res => {
               if (res.code == 200) {
-                if (res.data) this.$common.setOtherInfo("user", res.data); // 
+                if (res.data) this.$common.setOtherInfo("user", res.data); //
                 // 登录成功
                 // 可以在此写跳转到首页
                 this.$router.push({ path: "/index" });

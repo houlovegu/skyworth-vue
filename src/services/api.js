@@ -13,6 +13,18 @@ export default {
     url: baseURL + "/menu/getRouter", // 登录接口
     method: "get"
   },
+  getUserList: {
+    url: baseURL + "/user/list", // 登录接口
+    method: "post"
+  },
+  getAddUser: {
+    url: baseURL + "/user/register", // 登录接口
+    method: "post"
+  },
+  getUpdateUserStatus: {
+    url: baseURL + "/user/update/status", // 登录接口
+    method: "post"
+  },
   signOut: {
     url: baseURL + "/user/logout", // 登出接口
     method: "get"

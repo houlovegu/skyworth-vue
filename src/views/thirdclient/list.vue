@@ -173,7 +173,7 @@
       <el-table-column fixed="right" label="操作" width="220px" align="center">
         <template #default="scope">
           <el-tooltip content="重置密码" placement="top">
-            <el-button 
+            <el-button
               type="warning"
               @click="handleResetPass(scope.row.id)"
             ><i class="el-icon-lock"></i>重置密码</el-button>
@@ -343,7 +343,7 @@ export default {
             rst+=this.AuthorizationGrantTypeEnum[key]
           }
         }
-      
+
       });
       return rst;
     },

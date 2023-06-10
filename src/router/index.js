@@ -1,7 +1,21 @@
+// HOME
+const home = resolve => {
+  require.ensure(["../views/home/home.vue"], () => {
+    resolve(require("../views/home/home.vue"));
+  });
+};
+
 // index
 const index = resolve => {
   require.ensure(["../views/index/index.vue"], () => {
     resolve(require("../views/index/index.vue"));
+  });
+};
+
+// user
+const user = resolve => {
+  require.ensure(["../views/user/user.vue"], () => {
+    resolve(require("../views/user/user.vue"));
   });
 };
 
@@ -74,66 +88,84 @@ const constantRoutes = [
   },
 ];
 
-// 清空路由表
-export const asyncRouterMap = [];
-
-
-
-
 export const routes = [
   {
     path: "/",
     redirect: "/login"
   },
   {
-    path: "/index",
-    name: "Index",
-    component: index,
+    path: "/home",
+    name: "Home",
+    component: home,
     meta: {
       title: "Dashboard",
       content: "一些页面描述---有助于google搜索",
-      path: "index",
+      path: "home",
       auth: true,
       keepAlive: false
     },
-    redirect: "/device",
+    redirect: "/index",
     children: [
       {
-        path: "/device",
-        name: "Device",
-        component: device,
+        path: "/index",
+        name: "Index",
+        component: index,
         meta: {
-          title: "Device",
+          title: "Index",
           content: "一些页面描述---有助于google搜索",
-          path: "device",
+          path: "index",
           auth: true,
           keepAlive: false
         }
       },
       {
-        path: "/message",
-        name: "Message",
-        component: message,
+        path: "/user",
+        name: "User",
+        component: user,
         meta: {
-          title: "Message",
+          title: "User",
           content: "一些页面描述---有助于google搜索",
-          path: "message",
+          path: "user",
           auth: true,
           keepAlive: false
         }
       },
-      {
-        path: "/thirdClient",
-        name: "ThirdClient",
-        component: thirdClient,
-        meta: {
-          title: "ThirdClient",
-          content: "一些页面描述---有助于google搜索",
-          path: "thirdClient",
-          auth: true,
-          keepAlive: false
-        }
-      },
+      // {
+      //   path: "/device",
+      //   name: "Device",
+      //   component: device,
+      //   meta: {
+      //     title: "Device",
+      //     content: "一些页面描述---有助于google搜索",
+      //     path: "device",
+      //     auth: true,
+      //     keepAlive: false
+      //   }
+      // },
+      // {
+      //   path: "/message",
+      //   name: "Message",
+      //   component: message,
+      //   meta: {
+      //     title: "Message",
+      //     content: "一些页面描述---有助于google搜索",
+      //     path: "message",
+      //     auth: true,
+      //     keepAlive: false
+      //   }
+      // },
+      // {
+      //   path: "/thirdClient",
+      //   name: "ThirdClient",
+      //   component: thirdClient,
+      //   meta: {
+      //     title: "ThirdClient",
+      //     content: "一些页面描述---有助于google搜索",
+      //     path: "thirdClient",
+      //     auth: true,
+      //     keepAlive: false
+      //   }
+      // },
     ]
   },
   {
@@ -168,66 +200,6 @@ export const routes = [
       title: "Reset",
       content: "一些页面描述---有助于google搜索",
       path: "reset",
-      auth: true,
-      keepAlive: false
-    }
-  },
-  {
-    path: "/device",
-    name: "Device",
-    component: device,
-    meta: {
-      title: "Device",
-      content: "一些页面描述---有助于google搜索",
-      path: "device",
-      auth: true,
-      keepAlive: false
-    }
-  },
-  {
-    path: "/message",
-    name: "Message",
-    component: message,
-    meta: {
-      title: "Message",
-      content: "一些页面描述---有助于google搜索",
-      path: "message",
-      auth: true,
-      keepAlive: false
-    }
-  },
-  {
-    path: "/thirdClient",
-    name: "ThirdClient",
-    component: thirdClient,
-    meta: {
-      title: "ThirdClient",
-      content: "一些页面描述---有助于google搜索",
-      path: "thirdClient",
-      auth: true,
-      keepAlive: false
-    }
-  },
-  {
-    path: "/oauth",
-    name: "Oauth",
-    component: oauth,
-    meta: {
-      title: "Sign In",
-      content: "一些页面描述---有助于google搜索",
-      path: "oauth",
-      auth: true,
-      keepAlive: false
-    }
-  },
-  {
-    path: "/confirm",
-    name: "Confirm",
-    component: confirm,
-    meta: {
-      title: "Sign In",
-      content: "一些页面描述---有助于google搜索",
-      path: "confirm",
       auth: true,
       keepAlive: false
     }

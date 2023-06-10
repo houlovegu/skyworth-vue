@@ -169,3 +169,16 @@ span.btn-th {
   padding: 0 10px;
   margin: 0 auto;
 }
+
+.flex {
+  display: flex;
+  align-items: center;
+}
+
+.flex.between{
+  justify-content: space-between;
+}
+
+.pointer{
+  cursor: pointer;
+}

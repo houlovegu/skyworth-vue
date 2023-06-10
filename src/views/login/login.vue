@@ -104,7 +104,7 @@ export default {
   created() {
     // 授权成功则调用后端接口
     // let code = this.getUrlQuery('token')
-    // let state = this.getUrlQuery('state')    
+    // let state = this.getUrlQuery('state')
     // if (code && state) this.loginByCode(code,state)
     let token = this.getUrlQuery('token')
     // let expire_in = this.getUrlQuery('expire_in')
@@ -148,6 +148,11 @@ export default {
                 // 登录成功
                 // 获取用户信息
                 this.userInfo();
+              } else {
+                this.$store.dispatch("showMessageTip", {
+                  type: "info",
+                  text: res.message,
+                });
               }
               this.isLoading = false;
             })
@@ -162,9 +167,7 @@ export default {
       this.$ajax.getData(this.$api.userInfo.url).then(res=>{
                   if (res.code == 200) {
                     if (res.data) {
-                      this.$common.setOtherInfo("user", res.data.user);
-                      this.$common.setOtherInfo("roles", res.data.roles);
-                      this.$common.setOtherInfo("permissions", res.data.permissions);
+                      this.$common.setOtherInfo("nav", JSON.stringify(res.data));
                     }
                     this.$router.push({ path: "/index" });
                   }
@@ -186,7 +189,7 @@ export default {
       //   },
       //   window.location.href
       // );
-      
+
       this.$common.setLocal("loginType", loginType)
       this.$ajax
         .getData(this.$api.getAuthLoginUrl.url+loginType)
@@ -199,7 +202,7 @@ export default {
           //   // 可以在此写跳转到首页
           //   // this.$router.push({ path: "/index" });
             window.location.href = res.data
-          }  
+          }
           this.isLoading = false;
         })
         .catch(err => {
@@ -231,14 +234,14 @@ export default {
             .then(res => {
               console.log(res);
               if (res.code == 200) {
-                if (res.data) this.$common.setOtherInfo("user", res.data); // 
+                if (res.data) this.$common.setOtherInfo("user", res.data); //
                 // 登录成功
                 // 可以在此写跳转到首页
                 this.$router.push({ path: "/index" });
               } else if (res.code == 403) {
                 this.$store.dispatch("showMessageTip", {
                   type: "error",
-                  text: res.msg
+                  text: res.message
                 });
               }
               this.isLoading = false;
